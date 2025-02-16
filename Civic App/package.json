@@ -1,0 +1,23 @@
+{
+  "name": "civic-app",
+  "version": "1.0.0",
+  "main": "node_modules/expo/AppEntry.js",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web"
+  },
+  "dependencies": {
+    "@react-navigation/native": "^7.0.14",
+    "@react-navigation/stack": "^7.1.1",
+    "expo": "^52.0.35",
+    "react": "18.2.0",
+    "react-native": "^0.73.11",
+    "react-native-gesture-handler": "~2.20.2",
+    "react-native-reanimated": "^3.16.7",
+    "react-native-safe-area-context": "4.12.0",
+    "react-native-screens": "^4.6.0",
+    "react-native-vector-icons": "^10.2.0"
+  }
+}
