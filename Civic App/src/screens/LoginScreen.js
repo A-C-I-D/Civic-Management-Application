@@ -1,13 +1,36 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  StyleSheet,
+  TouchableOpacity,
+  Alert,
+} from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from "@react-navigation/native";
 
-export default function LoginScreen({ navigation }) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+export default function LoginScreen() {
+  const navigation = useNavigation();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleLogin = () => {
-    // TODO: Integrate backend authentication
-    navigation.replace('Home');
+  const handleLogin = async () => {
+    if (!email || !password) {
+      Alert.alert("Error", "Please enter both email and password");
+      return;
+    }
+
+    // Backend authentication logic - To be implemented by Prachi & Chaitanya
+    const mockUser = { email: "user@example.com", password: "password123" };
+
+    if (email === mockUser.email && password === mockUser.password) {
+      await AsyncStorage.setItem("userToken", "dummy-auth-token");
+      navigation.replace("HomeScreen");
+    } else {
+      Alert.alert("Error", "Invalid credentials");
+    }
   };
 
   return (
@@ -19,6 +42,7 @@ export default function LoginScreen({ navigation }) {
         value={email}
         onChangeText={setEmail}
         keyboardType="email-address"
+        autoCapitalize="none"
       />
       <TextInput
         style={styles.input}
@@ -27,17 +51,34 @@ export default function LoginScreen({ navigation }) {
         onChangeText={setPassword}
         secureTextEntry
       />
-      <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Login</Text>
+      <Button title="Login" onPress={handleLogin} />
+      <TouchableOpacity
+        onPress={() => navigation.navigate("ForgotPasswordScreen")}
+      >
+        <Text style={styles.link}>Forgot Password?</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate("SignUpScreen")}>
+        <Text style={styles.link}>Don't have an account? Sign Up</Text>
       </TouchableOpacity>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  title: { fontSize: 24, fontWeight: 'bold', marginBottom: 20 },
-  input: { width: '80%', padding: 10, borderWidth: 1, marginBottom: 10, borderRadius: 5 },
-  button: { backgroundColor: 'blue', padding: 10, borderRadius: 5 },
-  buttonText: { color: 'white', fontSize: 16 },
+  container: { flex: 1, padding: 20, justifyContent: "center" },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 20,
+    textAlign: "center",
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    padding: 10,
+    marginBottom: 10,
+    borderRadius: 5,
+  },
+  link: { color: "blue", textAlign: "center", marginTop: 10 },
 });
+;
