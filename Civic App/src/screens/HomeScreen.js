@@ -75,7 +75,7 @@ export default function HomeScreen({ navigation }) {
           <View style={styles.headerRightContainer}>
             <TouchableOpacity 
               style={styles.iconButton} 
-              onPress={() => navigation.navigate('Notifications')}
+              onPress={() => navigation.navigate('NotificationScreen')}
             >
               <Ionicons name="notifications-outline" size={24} color="#333" />
               <View style={styles.notificationBadge}>
@@ -84,7 +84,7 @@ export default function HomeScreen({ navigation }) {
             </TouchableOpacity>
             <TouchableOpacity 
               style={styles.profileButton} 
-              onPress={() => navigation.navigate('Profile')}
+              onPress={() => navigation.navigate('ProfileScreen')}
             >
               <View style={styles.profileImageContainer}>
                 <Text style={styles.profileInitial}>A</Text>
