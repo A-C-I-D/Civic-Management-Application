@@ -31,7 +31,7 @@ const options = [
   { 
     id: '3', 
     name: 'Issue Details', 
-    screen: 'IssueDetailScreen',
+    screen: 'IssueDetailsScreen',
     icon: 'document-text-outline',
     color: '#1e88e5',
     description: 'View detailed information'

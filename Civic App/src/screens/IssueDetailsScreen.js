@@ -14,14 +14,18 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 
 export default function IssueDetailsScreen({ route, navigation }) {
-  const { issue } = route.params;
+  // Safely extract issue data or use empty object as fallback
+  const issue = route?.params?.issue || {};
+  
   const [comment, setComment] = useState('');
   const [comments, setComments] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [loadingError, setLoadingError] = useState(false);
+  const [isIssueAvailable, setIsIssueAvailable] = useState(Boolean(route?.params?.issue));
 
   // Format the timestamp to a readable date
   const formatDate = (timestamp) => {
+    if (!timestamp) return 'N/A';
     const date = new Date(timestamp);
     return date.toLocaleDateString('en-US', {
       year: 'numeric',
@@ -34,6 +38,8 @@ export default function IssueDetailsScreen({ route, navigation }) {
 
   // Get status color based on current status
   const getStatusColor = (status) => {
+    if (!status) return '#1e88e5'; // default blue
+    
     switch (status.toLowerCase()) {
       case 'pending':
         return '#e53935'; // red
@@ -94,6 +100,37 @@ export default function IssueDetailsScreen({ route, navigation }) {
     // Backend logic for submitting comment would go here
   };
 
+  const handleRetry = () => {
+    navigation.goBack();
+  };
+
+  // If issue data is not available, show error view
+  if (!isIssueAvailable) {
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        <StatusBar barStyle="dark-content" backgroundColor="#f5f5f5" />
+        <View style={styles.header}>
+          <TouchableOpacity 
+            style={styles.backButton} 
+            onPress={() => navigation.goBack()}
+          >
+            <Ionicons name="arrow-back" size={24} color="#333" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Issue Details</Text>
+          <View style={styles.shareButton} />
+        </View>
+        <View style={styles.errorContainer}>
+          <Ionicons name="alert-circle-outline" size={50} color="#e53935" />
+          <Text style={styles.errorText}>Issue data not available</Text>
+          <Text style={styles.errorSubtext}>The issue information could not be loaded</Text>
+          <TouchableOpacity style={styles.retryButton} onPress={handleRetry}>
+            <Text style={styles.retryButtonText}>Go Back</Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar barStyle="dark-content" backgroundColor="#f5f5f5" />
@@ -117,17 +154,19 @@ export default function IssueDetailsScreen({ route, navigation }) {
         {/* Issue Status Banner */}
         <View style={[styles.statusBanner, { backgroundColor: getStatusColor(issue.status) }]}>
           <Ionicons name={
-            issue.status.toLowerCase() === 'resolved' ? 'checkmark-circle' :
-            issue.status.toLowerCase() === 'in progress' ? 'time' : 'alert-circle'
+            issue.status?.toLowerCase() === 'resolved' ? 'checkmark-circle' :
+            issue.status?.toLowerCase() === 'in progress' ? 'time' : 'alert-circle'
           } size={24} color="white" />
-          <Text style={styles.statusText}>{issue.status}</Text>
+          <Text style={styles.statusText}>{issue.status || 'Unknown'}</Text>
         </View>
 
         {/* Issue Location & Timestamp */}
         <View style={styles.metadataContainer}>
           <View style={styles.metadataItem}>
             <Ionicons name="location-outline" size={20} color="#666" />
-            <Text style={styles.metadataText}>{issue.location.address || `${issue.location.latitude}, ${issue.location.longitude}`}</Text>
+            <Text style={styles.metadataText}>
+              {issue.location?.address || (issue.location ? `${issue.location.latitude}, ${issue.location.longitude}` : 'Location unknown')}
+            </Text>
           </View>
           <View style={styles.metadataItem}>
             <Ionicons name="calendar-outline" size={20} color="#666" />
@@ -160,7 +199,7 @@ export default function IssueDetailsScreen({ route, navigation }) {
         {/* Issue Description */}
         <View style={styles.descriptionContainer}>
           <Text style={styles.sectionTitle}>Description</Text>
-          <Text style={styles.description}>{issue.description}</Text>
+          <Text style={styles.description}>{issue.description || 'No description provided.'}</Text>
         </View>
 
         {/* Progress Timeline */}
@@ -467,13 +506,23 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   errorContainer: {
+    flex: 1,
     alignItems: 'center',
+    justifyContent: 'center',
     padding: 24,
   },
   errorText: {
-    marginTop: 8,
-    marginBottom: 16,
+    marginTop: 12,
+    fontWeight: 'bold',
+    fontSize: 18,
     color: '#e53935',
+  },
+  errorSubtext: {
+    marginTop: 8,
+    marginBottom: 24,
+    fontSize: 14,
+    color: '#666',
+    textAlign: 'center',
   },
   retryButton: {
     backgroundColor: '#1e88e5',
