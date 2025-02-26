@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "extra": {
+      "eas": {
+        "projectId": "0af27ca2-06d3-4798-8748-101d77789a00"
+      }
+    },
+    "android": {
+      "package": "com.boxboxved.civicapp"
+    }
+  }
+}
